@@ -1,0 +1,22 @@
+{
+  "name": "iofa",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HolmesDomain/IofA.git"
+  },
+  "author": "AJH",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/HolmesDomain/IofA/issues"
+  },
+  "homepage": "https://github.com/HolmesDomain/IofA#readme",
+  "dependencies": {
+    "axios": "^0.26.0"
+  }
+}
