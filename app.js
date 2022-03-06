@@ -1,12 +1,32 @@
 const axios = require('axios').default;
 const host = "http://143.198.151.138:8089/api/simulations";
 
-// Init sim
+// Init sim instances
+axios.post(host + "/create", {
+  env_name: "Test1",
+})
+.then(function (response) {
+  console.log(response.data);
+})
+.catch(function (error) {
+  console.log(error);
+})
+.then(function () {
+  axios.put(host + "/0/start")
+  .then(function (response) {
+    console.log(response.data);
+  })
+  .catch(function (error) {
+    console.log(error);
+  });
+})
+
+
 // axios.post(host + "/create", {
-//   env_name: "Test1",
+//   env_name: "Test2",
 // })
 // .then(function (response) {
-//   console.log(response);
+//   console.log(response.data);
 // })
 // .catch(function (error) {
 //   console.log(error);
@@ -15,7 +35,7 @@ const host = "http://143.198.151.138:8089/api/simulations";
 // Start sim
 // axios.put(host + "/0/start")
 // .then(function (response) {
-//   console.log(response);
+//   console.log(response.data);
 // })
 // .catch(function (error) {
 //   console.log(error);
@@ -42,24 +62,11 @@ const host = "http://143.198.151.138:8089/api/simulations";
 //   console.log(error);
 // });
 
-function action(action) {
-  axios.post(host + "/0/agents/0/action", {
-    action: action,
-    mode: 12
-  })
-  .then(function (response) {
-    console.log(response.data);
-  })
-  .catch(function (error) {
-    console.log(error);
-  });  
-}
-
 // Step sim
-axios.put(host + "/0/step")
-.then(function (response) {
-  console.log(response.data);
-})
-.catch(function (error) {
-  console.log(error);
-});
+// axios.put(host + "/0/step")
+// .then(function (response) {
+//   console.log(response.data);
+// })
+// .catch(function (error) {
+//   console.log(error);
+// });
