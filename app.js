@@ -2,8 +2,27 @@ const axios = require('axios').default;
 const host = "http://143.198.151.138:8089/api/simulations";
 
 // Init sim instances
+// axios.post(host + "/create", {
+//   env_name: "Test1",
+// })
+// .then(function (response) {
+//   console.log(response.data);
+// })
+// .catch(function (error) {
+//   console.log(error);
+// })
+// .then(function () {
+//   axios.put(host + "/0/start")
+//   .then(function (response) {
+//     console.log(response.data);
+//   })
+//   .catch(function (error) {
+//     console.log(error);
+//   });
+// });
+
 axios.post(host + "/create", {
-  env_name: "Test1",
+  env_name: "Test2",
 })
 .then(function (response) {
   console.log(response.data);
@@ -12,25 +31,14 @@ axios.post(host + "/create", {
   console.log(error);
 })
 .then(function () {
-  axios.put(host + "/0/start")
+  axios.put(host + "/1/start")
   .then(function (response) {
     console.log(response.data);
   })
   .catch(function (error) {
     console.log(error);
   });
-})
-
-
-// axios.post(host + "/create", {
-//   env_name: "Test2",
-// })
-// .then(function (response) {
-//   console.log(response.data);
-// })
-// .catch(function (error) {
-//   console.log(error);
-// });
+});
 
 // Start sim
 // axios.put(host + "/0/start")
