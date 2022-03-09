@@ -1,36 +1,49 @@
 const axios = require('axios').default;
-const joystick = require("./joystick.js");
+const joystick = require("./rev_joystick.js");
 const agent = require("./agent.js");
+
 const host = "http://143.198.151.138:8089/api/simulations";
+let pointsLeft = 50;
 
-let pointsLeft;
+function play () {
+  // let pointsLeft = 50;
 
-async function play () {
-  do {
+  // while (pointsLeft < 100) {
     //agent 0 do 1 think
-    await agent.think(0).then(async function () {
-      await joystick.endTurn(2);
-    })
+
+
+
+
+    for(let x = 0; x<3; x++) {
+      agent.think(0)
+      .then((response) => {
+        return joystick.endTurn(2);
+      }).then((response) => {
+        console.log('Response', response);
+        return axios.get(host + "/2/status");
+      })
+      .then((response) => {
+        console.log(response.data);
+        // pointsLeft += 50;
+      })
+      .catch (err => {
+        console.log(err);
+      });
+    }
+
     // agent 1 do think
     //end turn
     // await joystick.endTurn(2);
 
-    axios.get(host + "/2/status")
-    .then(function (response) {
-      // console.log(response.data);
-      pointsLeft = response.data.simulationData.Statistics.SimPoints;
-    })
-    .catch(function (error) {
-      console.log(error);
-    });
-  }
-  while (pointsLeft < 100);
+    // axios.get(host + "/2/status")
+    // .then(function (response) {
+    //   // console.log(response.data);
+    //   pointsLeft = response.data.simulationData.Statistics.SimPoints;
+    // })
+    // .catch(function (error) {
+    //   console.log(error);
+    // });
+  // }
 }
-
-// function hw1 () { 
-//   await play();
-// }
-
-// hw1();
 
 play();
