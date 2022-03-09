@@ -1,4 +1,4 @@
-const axios = require('axios').default;
+const axios = require('axios');
 const host = "http://143.198.151.138:8089/api/simulations";
 
 // Init sim instances
