@@ -11,7 +11,7 @@ function action(instance, agent, action, mode) {
       resolve(response);
     })
     .catch(function (error) {
-      console.log(error);
+      console.log(error.data);
       reject(error);
     });
   })
@@ -24,8 +24,8 @@ function endTurn(instance) {
       resolve(response);
     })
     .catch(err => { 
-      console.log(err);
-      reject(err);
+      console.log(err.data);
+      reject(err.data);
     });
   })
 }
@@ -39,7 +39,7 @@ function loadMap(host, env) {
       resolve(response);
     })
     .catch(function (error) {
-      console.log(error);
+      console.log(error.data);
       reject(error);
     })
   });
@@ -52,7 +52,7 @@ function start(host, instance) {
       resolve(response);
     })
     .catch(function (error) {
-      console.log(error);
+      console.log(error.data);
       reject(error);
     })
   })

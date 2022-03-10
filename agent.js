@@ -2,7 +2,9 @@ const axios = require('axios');
 const joystick = require("./rev_joystick.js");
 const host = "http://143.198.151.138:8089/api/simulations";
 
-let target;
+let targets = {};
+
+let queue = ["turnRight", "turnRight", "moveForward","turnRight", "turnRight", "moveForward"];
 
 const scan = {
   home: "",
@@ -25,23 +27,30 @@ const scan = {
 
 function think(agent, instance) {
   return new Promise((resolve, reject) => {
+
     getScan(agent, instance).then(function(response) {
       if (scan.payloaded >= 0) {
-        return goHome(agent, scan.home, instance);
+        if (scan.home.length == 0) {
+          // console.log("Oh no");
+          //Set a target path
+          // const right = joystick.action(instance, agent, "turnRight", 0);
+          // stack.push("turnRight");
+          // console.log(stack[0]);
+          return joystick.action(instance, agent, "idle", 0);
+        } else {
+            goHome(agent, scan.home, instance);
+            return queue.shift();
+        }
       } else {
         if(scan.payload.length != 0) {
           if(scan.payload.length > 1) {
             let target = [nearestLoc(scan.payload)];
             console.log(target, "more");
-            return getPayload(agent, target, instance);
+            getPayload(agent, target, instance);
+            return queue.shift();
           } else {
-            console.log(Math.abs(scan.payload[0][0]) + Math.abs(scan.payload[0][1]))
-            if (Math.abs(scan.payload[0][0]) == Math.abs(scan.payload[0][1])) {
-              return joystick.action(instance, agent, "moveForward", 0); 
-            } else {
               console.log("else");
               return getPayload(agent, scan.payload, instance);
-            }
           }
         } else {
           return goHome(agent, scan.home, instance);
@@ -61,18 +70,23 @@ function think(agent, instance) {
 function goHome(agent, targ, instance) {
   return new Promise((resolve, reject) => {
     try {
-      console.log(targ);
       if (Math.abs(targ[0][0]) == Math.abs(targ[0][1])) {
-        resolve(joystick.action(instance, agent, "moveForward", 0));
-      }
-      if(targ[0][0] > 0) {
-        resolve(joystick.action(instance, agent, "turnRight", 0));
-      } else if (targ[0][0] < 0) {
-        resolve(joystick.action(instance, agent, "turnLeft", 0));
-      } else if (targ[0][0] == 0 && targ[0][1] == 1) {
-        resolve(joystick.action(instance, agent, "drop", 0));
-      } else if (targ[0][0] == 0 && targ[0][1] > 0) {
-        resolve(joystick.action(instance, agent, "moveForward", 0));
+        // if(queue.length == 0) {
+        //   queue.push("turnRight", "turnRight", "moveForward");
+        // }
+        console.log(queue, "ADJACENT");
+        console.log(queue[0]);
+        resolve(joystick.action(instance, agent, queue[0], 0));
+      } else {
+        if(targ[0][0] > 0) {
+          resolve(joystick.action(instance, agent, "turnRight", 0));
+        } else if (targ[0][0] < 0) {
+          resolve(joystick.action(instance, agent, "turnLeft", 0));
+        } else if (targ[0][0] == 0 && targ[0][1] == 1) {
+          resolve(joystick.action(instance, agent, "drop", 0));
+        } else if (targ[0][0] == 0 && targ[0][1] > 0) {
+          resolve(joystick.action(instance, agent, "moveForward", 0));
+        }
       }
     } catch (err) {
       console.log(err);
@@ -84,14 +98,23 @@ function goHome(agent, targ, instance) {
 function getPayload(agent, targ, instance) {
   return new Promise((resolve, reject) => {
     try {
-      if(targ[0][0] > 0) {
-        resolve(joystick.action(instance, agent, "turnRight", 0));
-      } else if (targ[0][0] < 0) {
-        resolve(joystick.action(instance, agent, "turnLeft", 0));
-      } else if (targ[0][0] == 0 && targ[0][1] == 1) {
-        resolve(joystick.action(instance, agent, "pickUp", 0));
-      } else if (targ[0][0] == 0 && targ[0][1] > 0) {
-        resolve(joystick.action(instance, agent, "moveForward", 0));
+      if (Math.abs(targ[0][0]) == Math.abs(targ[0][1])) {
+        // if(queue.length == 0) {
+        //   queue.push("turnRight", "turnRight", "moveForward");
+        // }
+        console.log(queue, "ADJACENT");
+        console.log(queue[0]);
+        resolve(joystick.action(instance, agent, queue[0], 0));
+      } else {
+        if(targ[0][0] > 0) {
+          resolve(joystick.action(instance, agent, "turnRight", 0));
+        } else if (targ[0][0] < 0) {
+          resolve(joystick.action(instance, agent, "turnLeft", 0));
+        } else if (targ[0][0] == 0 && targ[0][1] == 1) {
+          resolve(joystick.action(instance, agent, "pickUp", 0));
+        } else if (targ[0][0] == 0 && targ[0][1] > 0) {
+          resolve(joystick.action(instance, agent, "moveForward", 0));
+        }
       }
     } catch (err) {
       console.log(err);
@@ -131,6 +154,7 @@ function getScan(agent, instance) {
 }
 
 function nearestLoc(locList) {
+  console.log("rearest");
   let close = 0;
   for(let i = 0; i < locList.length; i++) {
     loc = locList[i].toString();
