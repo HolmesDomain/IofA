@@ -30,6 +30,34 @@ function endTurn(instance) {
   })
 }
 
+function loadMap(host, env) {
+  return new Promise((resolve, reject) => {
+    axios.post(host + "/create", {
+      env_name: env,
+    })
+    .then(function (response) {
+      resolve(response);
+    })
+    .catch(function (error) {
+      console.log(error);
+      reject(error);
+    })
+  });
+}
+
+function start(host, instance) {
+  return new Promise((resolve, reject) => {
+    axios.put(host + "/" + instance + "/start")
+    .then(function (response) {
+      resolve(response);
+    })
+    .catch(function (error) {
+      console.log(error);
+      reject(error);
+    })
+  })
+}
+
 function sleep(ms) {
   return new Promise((resolve) => {
     setTimeout(resolve, ms);
@@ -38,3 +66,5 @@ function sleep(ms) {
 
 exports.action = action;
 exports.endTurn = endTurn;
+exports.loadMap = loadMap;
+exports.start = start;

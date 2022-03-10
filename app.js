@@ -1,4 +1,5 @@
 const axios = require('axios');
+const joystick = require("./rev_joystick.js");
 const host = "http://143.198.151.138:8089/api/simulations";
 
 // Init sim instances
@@ -40,24 +41,8 @@ const host = "http://143.198.151.138:8089/api/simulations";
 //   });
 // });
 
-axios.post(host + "/create", {
-  env_name: "HW1",
-})
-.then(function (response) {
-  console.log(response.data);
-})
-.catch(function (error) {
-  console.log(error);
-})
-.then(function () {
-  axios.put(host + "/2/start")
-  .then(function (response) {
-    console.log(response.data);
-  })
-  .catch(function (error) {
-    console.log(error);
-  });
-});
+  // const map0 = await joystick.loadMap(host, "HW1");
+  // const startRestart = await joystick.start(host, 2);
 
 // Start sim
 // axios.put(host + "/0/start")
