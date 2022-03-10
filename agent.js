@@ -4,7 +4,8 @@ const host = "http://143.198.151.138:8089/api/simulations";
 
 let targets = {};
 
-let queue = ["turnRight", "turnRight", "moveForward","turnRight", "turnRight", "moveForward"];
+let turnBack = ["turnRight", "turnRight", "moveForward"];
+let turnBack2 = ["turnRight", "turnRight", "moveForward"];
 
 const scan = {
   home: "",
@@ -27,30 +28,30 @@ const scan = {
 
 function think(agent, instance) {
   return new Promise((resolve, reject) => {
-
     getScan(agent, instance).then(function(response) {
       if (scan.payloaded >= 0) {
+        console.log("I do have a payload")
         if (scan.home.length == 0) {
-          // console.log("Oh no");
-          //Set a target path
-          // const right = joystick.action(instance, agent, "turnRight", 0);
-          // stack.push("turnRight");
-          // console.log(stack[0]);
           return joystick.action(instance, agent, "idle", 0);
         } else {
-            goHome(agent, scan.home, instance);
-            return queue.shift();
+          return goHome(agent, scan.home, instance)
+          .then((response) => {
+            queue.shift();
+          });
         }
       } else {
         if(scan.payload.length != 0) {
+          console.log("I don't have a payload")
           if(scan.payload.length > 1) {
-            let target = [nearestLoc(scan.payload)];
-            console.log(target, "more");
-            getPayload(agent, target, instance);
-            return queue.shift();
+            console.log(">1 payload")
+            return getPayload(agent, scan.payload, instance);
           } else {
-              console.log("else");
-              return getPayload(agent, scan.payload, instance);
+            console.log("I have less than 1 payload");
+            console.log(scan.payload);
+            return getPayload(agent, scan.payload, instance)
+            .then((response) => {
+              queue2.shift();
+            });
           }
         } else {
           return goHome(agent, scan.home, instance);
@@ -71,10 +72,7 @@ function goHome(agent, targ, instance) {
   return new Promise((resolve, reject) => {
     try {
       if (Math.abs(targ[0][0]) == Math.abs(targ[0][1])) {
-        // if(queue.length == 0) {
-        //   queue.push("turnRight", "turnRight", "moveForward");
-        // }
-        console.log(queue, "ADJACENT");
+        console.log(queue, "ADJACENT home");
         console.log(queue[0]);
         resolve(joystick.action(instance, agent, queue[0], 0));
       } else {
@@ -98,14 +96,13 @@ function goHome(agent, targ, instance) {
 function getPayload(agent, targ, instance) {
   return new Promise((resolve, reject) => {
     try {
+      console.log("payload if")
       if (Math.abs(targ[0][0]) == Math.abs(targ[0][1])) {
-        // if(queue.length == 0) {
-        //   queue.push("turnRight", "turnRight", "moveForward");
-        // }
-        console.log(queue, "ADJACENT");
-        console.log(queue[0]);
-        resolve(joystick.action(instance, agent, queue[0], 0));
+        console.log(queue2, "ADJACENT payload");
+        console.log(queue2[0]);
+        resolve(joystick.action(instance, agent, queue2[0], 0));
       } else {
+        console.log("payload else")
         if(targ[0][0] > 0) {
           resolve(joystick.action(instance, agent, "turnRight", 0));
         } else if (targ[0][0] < 0) {
@@ -122,17 +119,6 @@ function getPayload(agent, targ, instance) {
     }
   });
 }
-
-// let a = payload[x][0];
-// let b = payload[x][1]
-
-// if (Math.abs(payload[x][0]) == Math.abs(payload[x][1])) {
-  
-// }
-
-
-
-
 
 function getScan(agent, instance) {
   return new Promise((resolve, reject) => {
